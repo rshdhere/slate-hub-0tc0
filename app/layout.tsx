@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "slate-hub-0tc0",
-  description: "make me a todo-list using nextjs",
+  title: "Todo List · Slate Hub",
+  description: "A focused Next.js todo list to capture and complete tasks.",
 };
 
 export default function RootLayout({
