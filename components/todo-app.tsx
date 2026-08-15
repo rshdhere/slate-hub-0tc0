@@ -100,6 +100,24 @@ export function TodoApp() {
     }
   }
 
+  async function clearCompleted() {
+    const done = todos.filter((t) => t.completed);
+    if (done.length === 0) return;
+    const snapshot = todos;
+    setTodos((prev) => prev.filter((t) => !t.completed));
+    try {
+      await Promise.all(
+        done.map(async (todo) => {
+          const res = await fetch(`/api/todos/${todo.id}`, { method: "DELETE" });
+          if (!res.ok) throw new Error("clear failed");
+        }),
+      );
+    } catch {
+      setTodos(snapshot);
+      setError("Could not clear completed tasks.");
+    }
+  }
+
   return (
     <div className="mx-auto w-full max-w-xl px-4 py-10 sm:py-16">
       <header className="mb-8">
@@ -154,6 +172,19 @@ export function TodoApp() {
             ))}
           </div>
         </div>
+
+        {todos.some((t) => t.completed) ? (
+          <div className="mt-3 flex justify-end">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => void clearCompleted()}
+            >
+              Clear completed
+            </Button>
+          </div>
+        ) : null}
 
         {error ? (
           <p className="mt-4 rounded-lg bg-[var(--color-danger-soft)] px-3 py-2 text-sm text-[var(--color-danger)]" role="alert">
